@@ -1,13 +1,17 @@
 import { Routes, Route, Outlet, Link } from "react-router-dom";
 
 export function Footer() {
+  //improve styles
     return (
+
+       
   
       
   
   <div className="container text-center bg-grey border-colorat" style={{paddingBottom:" 4rem"}}>
+
 <nav id="navbar" className="navbar">
-       
+     
    
          <Link to="/">Home</Link>
          - -

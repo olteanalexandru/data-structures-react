@@ -2,148 +2,249 @@ import { useState } from 'react';
 
 export function LinkedList() {
 
-    // UNILATERAL LINKED LIST METHODS
-    // size: Return the number of node(s).
-    // head: Return the element of the head.
-    // add: Add another node in the tail.
-    // remove: Remove a certain node.
-    // indexOf: Return the index of a node.
-    // elementAt: Return the node of an index.
-    // addAt: Insert a node at a specific index.
-    // removeAt: Delete a node at a specific index.
-
-    const [linkedlist, setLinkedList] = useState([]);
-    const [input, setInput] = useState('');
-    const [output, setOutput] = useState('');
-    const [index, setIndex] = useState('');
-    const [indexInput, setIndexInput] = useState('');
-    const [indexOutput, setIndexOutput] = useState('');
-
-    const add = () => {
-        setLinkedList([...linkedlist, input]);
-        setInput('');
-    }
-
-    const remove = () => {
-        if (linkedlist.length > 0) {
-            setOutput(linkedlist[linkedlist.length - 1]);
-            setLinkedList(linkedlist.slice(0, linkedlist.length - 1));
+    //Linked List Function
+    const createNode = (value) => {
+        return {
+            value,
+            next: null
         }
     }
-
-    const indexOf = () => {
-        setIndex(linkedlist.indexOf(input));
+    const createList = (value) => {
+        const node = createNode(value);
+        return {
+            head: node,
+            tail: node,
+            length: 1
+        }
+    }
+    const insertList = (list, value) => {
+        const node = createNode(value);
+        list.tail.next = node;
+        list.tail = node;
+        list.length++;
+        return list;
+    }
+    const searchList = (list, value) => {
+        let currentNode = list.head;
+        while (currentNode !== null) {
+            if (currentNode.value === value) {
+                return true;
+            }
+            currentNode = currentNode.next;
+        }
+        return false;
+    }
+    const deleteList = (list, value) => {
+        if (list.head.value === value) {
+            list.head = list.head.next;
+            list.length--;
+            return list;
+        }
+        let currentNode = list.head;
+        while (currentNode.next !== null) {
+            if (currentNode.next.value === value) {
+                currentNode.next = currentNode.next.next;
+                list.length--;
+                return list;
+            }
+            currentNode = currentNode.next;
+        }
+        return list;
+    }
+    const [list, setList] = useState(null);
+    const [input, setInput] = useState('');
+    const [output, setOutput] = useState('');
+    const [indexInput, setIndexInput] = useState('');
+    const [indexOutput, setIndexOutput] = useState('');
+    const [index, setIndex] = useState('');
+    const [startNode, setStartNode] = useState('');
+    const [showLinkedList, setshowLinkedList] = useState('');
+    // Linked List insertion
+    const insertLinkedList = () => {
+        if (list === null) {
+            setList(createList(input));
+        } else {
+            setList(insertList(list, input));
+        }
         setInput('');
     }
-
-    const elementAt = () => {
-        setIndexOutput(linkedlist[index]);
-        setIndex('');
+    // Linked List search
+    const searchLinkedList = () => {
+        if (list === null) {
+            setOutput('List is empty');
+            setInput('');
+            return;
+        }
+        if (searchList(list, input)) {
+            setOutput('Found');
+        } else {
+            setOutput('Not Found');
+        }
+        setInput('');
     }
-
-    const addAt = () => {
-        linkedlist.splice(index, 0, indexInput);
-        setLinkedList(linkedlist);
+    // Linked List delete
+    const deleteLinkedList = () => {
+        if (list === null) {
+            setOutput('List is empty');
+            setInput('');
+            return;
+        }
+        if (searchList(list, input)) {
+            setList(deleteList(list, input));
+            setOutput('Deleted');
+        } else {
+            setOutput('Not Found');
+        }
+        setInput('');
+    }
+    // Linked List index
+    const indexLinkedList = () => {
+        if (list === null) {
+            setIndexOutput('List is empty');
+            setIndexInput('');
+            return;
+        }
+        let currentNode = list.head;
+        let i = 0;
+        while (currentNode !== null) {
+            if (currentNode.value === indexInput) {
+                setIndexOutput(i);
+                setIndexInput('');
+                return;
+            }
+            currentNode = currentNode.next;
+            i++;
+        }
+        setIndexOutput('Not Found');
         setIndexInput('');
-        setIndex('');
     }
-
-    const removeAt = () => {
-        setIndexOutput(linkedlist[index]);
-        linkedlist.splice(index, 1);
-        setLinkedList(linkedlist);
-        setIndex('');
+    // Linked List start node
+    const startNodeLinkedList = () => {
+        if (list === null) {
+            setStartNode('List is empty');
+            return;
+        }
+        setStartNode(list.head.value);
     }
+    // Linked List BFS
+    const showTheLinkedList = () => {
+        if (list === null) {
 
-
+            setshowLinkedList('List is empty');
+            return;
+        }
+        let currentNode = list.head;
+        let output = '';
+        while (currentNode !== null) {
+            output += currentNode.value + ' ';
+            currentNode = currentNode.next;
+        }
+        setshowLinkedList(output);
+    }
+    //keep same style format
     return (
-  
-      
-        <div className="container text-center bg-grey border-colorat" style={{paddingBottom:" 4rem"}}>
-            <h2>Linked List</h2>
-            <div className="row text-center">
-                <div className="col-sm-4">
-                    <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title">Add</h5>
-                            <p className="card-text">Adauga un element in lista</p>
-                            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} />
-                            <button className="btn btn-primary" onClick={add}>Add</button>
+        <div className="container text-center bg-grey border-colorat" style={{ paddingBottom: " 4rem" }}>
+            <h1>Linked List</h1>
+            <div className="row">
+                <div className="col-sm-6">
+
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <input type="text" className="form-control" placeholder="Enter value" value={input} onChange={(e) => setInput(e.target.value)} />
+                        </div>
+
+                        <div className="col-sm-6">
+                            <button className="btn btn-primary" onClick={insertLinkedList}>Insert</button>
+
                         </div>
                     </div>
-                </div>
-                <div className="col-sm-4">
-                    <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title">Remove</h5>
-                            <p className="card-text">Elimina un element din lista</p>
-                            <button className="btn btn-primary" onClick={remove}>Remove</button>
-                            <p>{output}</p>
+                    <br />
+                    <div className="row">
+                        <div className="col-sm-6">
+
+
+                            <input type="text" className="form-control" placeholder="Enter value" value={input} onChange={(e) => setInput(e.target.value)} />
+                        </div>
+
+                        <div className="col-sm-6">
+                            <button className="btn btn-primary" onClick={searchLinkedList}>Search</button>
                         </div>
                     </div>
-                </div>
-                <div className="col-sm-4">
-                    <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title">Index Of</h5>
-                            <p className="card-text">Returneaza indexul unui element</p>
-                            <input type="text" value={input} onChange={(e) => setInput(e.target.value)} />
-                            <button className="btn btn-primary" onClick={indexOf}>Index Of</button>
-                            <p>{index}</p>
+                    <br />
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <input type="text" className="form-control" placeholder="Enter value" value={input} onChange={(e) => setInput(e.target.value)} />
+                        </div>
+
+                        <div className="col-sm-6">
+                            <button className="btn btn-primary" onClick={deleteLinkedList}>Delete</button>
                         </div>
                     </div>
-                </div>
-            </div>
-            <div className="row text-center">
-                <div className="col-sm-4">
-                    <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title">Element At</h5>
-                            <p className="card-text">Returneaza elementul de la un index</p>
-                            <input type="text" value={index} onChange={(e) => setIndex(e.target.value)} />
-                            <button className="btn btn-primary" onClick={elementAt}>Element At</button>
-                            <p>{indexOutput}</p>
+                    <br />
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <input type="text" className="form-control" placeholder="Enter value" value={indexInput} onChange={(e) => setIndexInput(e.target.value)} />
+
+                        </div>
+
+                        <div className="col-sm-6">
+                            <button className="btn btn-primary" onClick={indexLinkedList}>Index</button>
                         </div>
                     </div>
-                </div>
-                <div className="col-sm-4">
-                    <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title">Add At</h5>
-                            <p className="card-text">Adauga un element la un index</p>
-                            <input type="text" value={index} onChange={(e) => setIndex(e.target.value)} />
-                            <input type="text" value={indexInput} onChange={(e) => setIndexInput(e.target.value)} />
-                            <button className="btn btn-primary" onClick={addAt}>Add At</button>
+                    <br />
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <button className="btn btn-primary" onClick={startNodeLinkedList}>Start Node</button>
+
+                        </div>
+
+                        <div className="col-sm-6">
+                            <input type="text" className="form-control" placeholder="Start Node" value={startNode} onChange={(e) => setStartNode(e.target.value)} />
                         </div>
                     </div>
+
                 </div>
-                <div className="col-sm-4">
-                    <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title">Remove At</h5>
-                            <p className="card-text">Elimina un element de la un index</p>
-                            <input type="text" value={index} onChange={(e) => setIndex(e.target.value)} />
-                            <button className="btn btn-primary" onClick={removeAt}>Remove At</button>
-                            <p>{indexOutput}</p>
+                <div className="col-sm-6">
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <button className="btn btn-primary" onClick={showTheLinkedList}>Show Linked List</button>
+
+                        </div>
+
+                        <div className="col-sm-6">
+                            <input type="text" className="form-control" placeholder="Linked List" value={showLinkedList} onChange={(e) => setshowLinkedList(e.target.value)} />
                         </div>
                     </div>
-                </div>
-            </div>
-            <div className="row text-center">
-                <div className="col-sm-12">
-                    <div className="card">
-                        <div className="card-body">
-                            <h5 className="card-title">Linked List</h5>
-                            <p className="card-text">Lista ta</p>
-                            <p>{linkedlist}</p>
+                    <br />
+
+                    <div className="row">
+                        <div className="col-sm-6">
+                            <input type="text" className="form-control" placeholder="Enter value" value={input} onChange={(e) => setInput(e.target.value)} />
+                        </div>
+
+                        <div className="col-sm-6">
+                            <input type="text" className="form-control" placeholder="Output" value={output} onChange={(e) => setOutput(e.target.value)} />
                         </div>
                     </div>
+                    <br />
+                    <div className="row">
+
+                        <div className="col-sm-6">
+                            <input type="text" className="form-control" placeholder="Enter value" value={indexInput} onChange={(e) => setIndexInput(e.target.value)} />
+                        </div>
+
+                        <div className="col-sm-6">
+
+                            <input type="text" className="form-control" placeholder="Output" value={indexOutput} onChange={(e) => setIndexOutput(e.target.value)} />
+                        </div>
+
+                    </div>
                 </div>
+
             </div>
         </div>
 
+    )
+}
 
-  
-  
-  )
-  }
+       
